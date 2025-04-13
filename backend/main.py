@@ -1,8 +1,17 @@
 from fastapi import FastAPI, HTTPException
 from keys import polygon_key
 import httpx
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # React dev server
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/stock/{ticker}")
 async def get_stock_info(ticker: str):

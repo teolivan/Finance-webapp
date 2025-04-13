@@ -44,4 +44,27 @@ async def get_OHLC_info(ticker: str, multiplier: str, timespan: str, timefrom: s
         print(f"Error: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
     
+    #Retrieve the Simple Moving Average (SMA) for a specified ticker over a defined time range. 
+    # The SMA calculates the average price across a set number of periods, 
+    # smoothing price fluctuations to reveal underlying trends and potential signals.
+    # e.g. of request url http://localhost:8000/stock/SMA/AAPL
 
+@app.get("/stock/SMA/{ticker}") 
+async def get_OHLC_info(ticker: str):
+    url = f"https://api.polygon.io/v1/indicators/sma/{ticker}?timespan=day&adjusted=true&window=50&series_type=close&order=desc"
+    params = {"apiKey": polygon_key}
+
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, params=params)
+
+        if response.status_code != 200:
+            raise HTTPException(status_code=response.status_code, detail="Polygon API error")
+
+        data = response.json()
+        return data
+
+    except Exception as e:
+        print(f"Error: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    

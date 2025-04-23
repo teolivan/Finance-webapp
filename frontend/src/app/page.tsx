@@ -12,6 +12,9 @@ export default function Home() {
       name: string;
       market: string;
       price: string;
+      description: string;
+      locale: string;
+      logo_url: string;
     };
   };
 
@@ -47,9 +50,12 @@ export default function Home() {
       </div>
 
       {result && (
-            <div>
-              <h2>Ticker: {result.results.ticker}</h2> 
-              <p>Market: {result.results.market}</p>
+            <div className="flex flex-col justify-center items-center h-250 bg-gray-900 w-300">
+              <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">{result.results.name} ({result.results.ticker})</h1> 
+              <p className="mb-6 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">Locale: {result.results.locale}</p>
+              <p className="mb-6 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">Market: {result.results.market}</p>
+              <p className="mb-6 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">{result.results.description}</p>
+              <img src={result.results.logo_url} alt={result.results.name} />
             </div>
 
         )}

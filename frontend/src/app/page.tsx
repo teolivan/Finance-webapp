@@ -48,8 +48,8 @@ export default function Home() {
 
       {result && (
             <div>
-              <h2>Ticker: {result.ticker}</h2> //need to fix this
-              <p>Price: {result.price}</p>
+              <h2>Ticker: {result.results.ticker}</h2> 
+              <p>Market: {result.results.market}</p>
             </div>
 
         )}

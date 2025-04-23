@@ -5,7 +5,6 @@ import axios from 'axios'; //axios parses JSON automatically, makes code cleaner
 export default function Home() {
   const [ticker, setTicker] = useState("");
   const [result, setResult] = useState<StockResult | null>(null);
-  const [brandresult, setBrandResult] = useState<Branding | null>(null);
 
   type StockResult = {
     results: {
@@ -25,13 +24,6 @@ export default function Home() {
     logo_url: string;
   }
 
-  const handleClick = async () => {
-   const responseData = await stockSearch();
-   if(responseData === undefined) {
-      return;
-   }
-   brandImage(responseData.results.branding);
-  }
 
   const stockSearch = async () => {
     try {
@@ -44,14 +36,7 @@ export default function Home() {
     
   }
 
-  const brandImage = async (responseData : Branding) => {
-    try {
-      const response = await axios.get<Branding>(`http://localhost:8000/branding-image?url=`)
-      setBrandResult(response.data);
-    } catch (error) {
-      console.error("API error: ", error);
-    }
-  }
+
 
   return (
 
@@ -69,7 +54,7 @@ export default function Home() {
           className="w-[200px] h-[50px] bg-white text-gray-700 px-4 rounded focus:outline-none"
           placeholder="Enter ticker here..."
         />
-        <button onClick={handleClick} className="bg-white hover:bg-gray-100 text-gray-700 h-[50px] font-semibold py-2 px-4 border border-gray-400 rounded shadow">
+        <button onClick={stockSearch} className="bg-white hover:bg-gray-100 text-gray-700 h-[50px] font-semibold py-2 px-4 border border-gray-400 rounded shadow">
           Search
         </button>
       </div>
@@ -80,8 +65,11 @@ export default function Home() {
               <p className="mb-6 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">Locale: {result.results.locale}</p>
               <p className="mb-6 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">Market: {result.results.market}</p>
               <p className="mb-6 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">{result.results.description}</p>
-              <img src={brandresult?.icon_url} alt={brandresult?.icon_url} className="h-[200px] mb-8"/>
-            </div>
+              <img 
+  src={`http://localhost:8000/branding-image?url=${encodeURIComponent(result.results.branding.icon_url)}`} 
+  alt={`${result.results.ticker} icon`} 
+  className="h-[100px] mb-4"
+/>             </div>
 
         )}
     </div>

@@ -2,6 +2,8 @@ from fastapi import FastAPI, HTTPException
 from keys import polygon_key
 import httpx
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
+
 
 app = FastAPI()
 
@@ -49,28 +51,20 @@ async def get_stock_info(ticker: str):
         print(f"Error: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
     
-# to retrieve the logo & icon of the company
+    
 @app.get("/branding-image")
-async def get_stock_info(url: str):
-    url = f"{url}"
-    print('test')
-    print(url)
+async def get_branding_image(url: str):
     params = {"apiKey": polygon_key}
-
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(url, params=params)
-
         if response.status_code != 200:
-            raise HTTPException(status_code=response.status_code, detail="Polygon API error")
+            raise HTTPException(status_code=response.status_code, detail="Image fetch failed")
 
-        data = response.json()
-        return data
-
+        return StreamingResponse(response.aiter_bytes(), media_type="image/jpeg")
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error fetching image: {e}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
-    
 
     # Retrieve aggregated historical OHLC (Open, High, Low, Close) and volume data for a specified stock ticker over a custom date range and time interval in Eastern Time (ET)
     # e.g. of request url http://localhost:8000/stock/OHLC/AAPL/1/day/2024-03-01/2024-03-10
